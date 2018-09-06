@@ -1,20 +1,19 @@
 /* global __dirname, require, module*/
 
-require('webpack');
-const path = require('path');
-const env = require('yargs').argv.env; // use --env with webpack 2
-const pkg = require('./package.json');
+require('webpack')
+const path = require('path')
+const env = require('yargs').argv.env // use --env with webpack 2
+const pkg = require('./package.json')
 
-let libraryName = pkg.name;
+let libraryName = pkg.name
 
-let outputFile, mode;
-
+let outputFile, mode
 if (env === 'build') {
-  mode = 'production';
-  outputFile = libraryName + '.min.js';
+  mode = 'production'
+  outputFile = libraryName + '.min.js'
 } else {
-  mode = 'development';
-  outputFile = libraryName + '.js';
+  mode = 'development'
+  outputFile = libraryName + '.js'
 }
 
 const config = {
@@ -24,7 +23,9 @@ const config = {
   output: {
     path: __dirname + '/lib',
     filename: outputFile,
-    library: libraryName,
+    library: libraryName.replace(/-([a-z])/gi, function(s, group1) {
+      return group1.toUpperCase()
+    }),
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
@@ -46,6 +47,5 @@ const config = {
     modules: [path.resolve('./node_modules'), path.resolve('./src')],
     extensions: ['.json', '.js']
   }
-};
-
-module.exports = config;
+}
+module.exports = config

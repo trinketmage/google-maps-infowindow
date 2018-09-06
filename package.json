@@ -5,6 +5,7 @@
   "main": "lib/webpack-library-starter.js",
   "scripts": {
     "build": "webpack --env dev && webpack --env build",
+    "start": "http-server ./",
     "dev": "webpack --progress --colors --watch --env dev"
   },
   "repository": {
