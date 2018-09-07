@@ -23,8 +23,8 @@ const config = {
   output: {
     path: __dirname + '/lib',
     filename: outputFile,
-    library: libraryName.replace(/-([a-z])/gi, function(s, group1) {
-      return group1.toUpperCase()
+    library: libraryName.replace(/^([a-z])|-([a-z])/gi, (match, first, kebab) => {
+      return first ? first.toUpperCase() : kebab.toUpperCase()
     }),
     libraryTarget: 'umd',
     umdNamedDefine: true
