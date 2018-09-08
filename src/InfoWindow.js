@@ -10,7 +10,6 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
     }
     this.marker = opts.marker
     this.map_ = opts.marker.getMap()
-    console.log(this.map_)
     this.position = opts.marker.position
     // opts.content.classList.add('infowindow-bubble-content')
     // pixelOffset.appendChild(opts.content)
@@ -18,42 +17,41 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
     this.openened = false
     this.anchor.classList.add('infowindow-tip-anchor')
     // this.anchor.appendChild(pixelOffset)
-    // this.stopEventPropagation()
+    this.stopEventPropagation()
     google.maps.event.addListener(this.marker, 'click', () => { //eslint-disable-line
       !this.map ? this.open() : this.close()
     })
   }
-  // panMap() {
-  //   var map = this.map_
-  //   var bounds = map.getBounds()
-  //   if (!bounds) return
-  //   const { position } = this
-  //   if (bounds.contains(position)) {
-  //     setTimeout(() => {
-  //       const mapDiv = map.getDiv()
-  //       const bounding = this.anchor
-  //         .querySelector('div')
-  //         .getBoundingClientRect()
-  //       let y = 0
-  //       let x = 0
-  //       if (bounding.top - bounding.height - 30 < 0) {
-  //         y = bounding.top - bounding.height - 30
-  //       } else if (bounding.bottom > mapDiv.offsetHeight) {
-  //         y = bounding.top - mapDiv.offsetHeight + 110
-  //       }
-  //       if (bounding.left < 0) {
-  //         x = bounding.left - 20
-  //       } else if (bounding.right > mapDiv.offsetWidth) {
-  //         x = bounding.left - mapDiv.offsetWidth + bounding.width + 20
-  //       }
-  //       if (x !== 0 || y !== 0) {
-  //         map.panBy(x, y)
-  //       }
-  //     }, 0)
-  //   } else {
-  //     map.panTo(position)
-  //   }
-  // }
+  panMap() {
+    var map = this.map_
+    var bounds = map.getBounds()
+    if (!bounds) return
+    const { position } = this
+    if (bounds.contains(position)) {
+      setTimeout(() => {
+        const mapDiv = map.getDiv()
+        const bounding = this.anchor
+          .getBoundingClientRect()
+        let y = 0
+        let x = 0
+        if (bounding.top - bounding.height - 30 < 0) {
+          y = bounding.top - bounding.height - 30
+        } else if (bounding.bottom > mapDiv.offsetHeight) {
+          y = bounding.top - mapDiv.offsetHeight + 110
+        }
+        if (bounding.left < 0) {
+          x = bounding.left - 20
+        } else if (bounding.right > mapDiv.offsetWidth) {
+          x = bounding.left - mapDiv.offsetWidth + bounding.width + 20
+        }
+        if (x !== 0 || y !== 0) {
+          map.panBy(x, y)
+        }
+      }, 0)
+    } else {
+      map.panTo(position)
+    }
+  }
   open() {
     this.setMap(this.map_)
   }
@@ -63,7 +61,7 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
   onAdd() {
     this.openened = true
     this.getPanes().floatPane.appendChild(this.anchor)
-    // this.panMap()
+    this.panMap()
   }
   onRemove() {
     this.openened = false
