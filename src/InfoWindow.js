@@ -4,7 +4,7 @@ import {
 } from './transition'
 
 const getGoogleClass = () => {
-  return google.maps.OverlayView//eslint-disable-line
+  return google.maps.OverlayView //eslint-disable-line
 }
 const createAnchor = () => {
   const anchor = document.createElement('div')
@@ -27,11 +27,30 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
     this.openened = false
     this.anchor = createAnchor()
     this.anchor.firstChild.appendChild(opts.content)
-    this.stopEventPropagation()
-    google.maps.event.addListener(this.marker, 'click', () => { //eslint-disable-line
-      !this.map ? this.open() : this.close()
-    })
+    this._listeners = []
     this.animated = opts.animated
+    this.defaultBindings(opts)
+    this.stopEventPropagation()
+  }
+  defaultBindings(opts) {
+    const closeCtas = this.anchor.querySelectorAll('.close-cta')
+    if (closeCtas.length > 0) {
+      [].forEach.call(closeCtas, closeCta => {
+        this._listeners.push(google.maps.event.addDomListener(closeCta, 'click', (e) => { //eslint-disable-line
+          if (e.stopPropagation) {
+            e.stopPropagation()
+          }
+          this.close()
+        }))
+      })
+    }
+
+    this._listeners.push(google.maps.event.addListener(this.marker, 'click', () => { //eslint-disable-line
+      !this.map ? this.open() : this.close()
+    }))
+    this._listeners.push(google.maps.event.addListener(this.map_, 'click', () => { //eslint-disable-line
+      !this.map || this.close()
+    }))
   }
   panMap() {
     var map = this.map_
@@ -41,7 +60,7 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
     if (bounds.contains(position)) {
       setTimeout(() => {
         const mapDiv = map.getDiv()
-        const bounding = this.anchor
+        const bounding = this.anchor.firstChild
           .getBoundingClientRect()
         let y = 0
         let x = 0
@@ -115,6 +134,19 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
       this.anchor.style.display = display
     }
   }
+  destroy () {
+    this.setMap(null)
+    this.clearListeners()
+  }
+  clearListeners () {
+    this._listeners.forEach((e) => {
+      google.maps.event.removeListener(e) //eslint-disable-line
+      e.listener = null
+    })
+    this._listeners = this._listeners.filter((e) => {
+      return e != null
+    })
+  }
   stopEventPropagation() {
     const { anchor } = this
     anchor.style.cursor = 'auto'
@@ -127,9 +159,9 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
       'touchstart',
       'pointerdown'
     ].forEach(event => {
-      anchor.addEventListener(event, function(e) {
+      this._listeners.push(anchor.addEventListener(event, function(e) {
         e.stopPropagation()
-      })
+      }))
     })
   }
 }

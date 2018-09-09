@@ -1,4 +1,3 @@
-
 const TRANSITION = 'transition'
 const ANIMATION = 'animation'
 export let transitionProp = 'transition'
@@ -49,7 +48,6 @@ const getTransitionInfo = (el, expectedType) => {
   let type
   let timeout = 0
   let propCount = 0
-  /* istanbul ignore if */
   if (expectedType === TRANSITION) {
     if (transitionTimeout > 0) {
       type = TRANSITION
