@@ -107,7 +107,6 @@ export function whenTransitionEnds (
       }
     }
     setTimeout(() => {
-      console.log9
       if (ended < propCount) {
         end()
       }
