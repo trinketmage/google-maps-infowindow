@@ -41,7 +41,7 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
     if (bounds.contains(position)) {
       setTimeout(() => {
         const mapDiv = map.getDiv()
-        const bounding = this.anchor
+        const bounding = this.anchor.firstChild
           .getBoundingClientRect()
         let y = 0
         let x = 0
