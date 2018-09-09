@@ -7,6 +7,7 @@ Transition behavior is highly inspired by @vuejs/transition.
 ## Examples
 * [basic](https://codepen.io/trinketmage/full/ZMvrLM)
 * [basic animated](https://codepen.io/trinketmage/full/KxZQvR)
+* [{{Mustache}}](https://codepen.io/trinketmage/full/wEpmKx/)
 
 ## Dependencies
 * [Google Maps](https://developers.google.com/maps/documentation/javascript/tutorial)
