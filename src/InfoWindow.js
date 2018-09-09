@@ -1,9 +1,8 @@
-const raf = window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : setTimeout
-export function nextFrame (fn) {
-  raf(() => {
-    raf(fn)
-  })
-}
+import {
+  whenTransitionEnds,
+  nextFrame
+} from './transition'
+
 const getGoogleClass = () => {
   return google.maps.OverlayView//eslint-disable-line
 }
@@ -67,30 +66,22 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
   open() {
     if (this.animated) {
       this.anchor.classList.add('enter')
-      this.anchor.addEventListener('animationend', this.enterDone.bind(this), {
-        once: true
+      nextFrame(() => {
+        whenTransitionEnds(this.anchor, false, () => this.enterDone())
       })
     }
     this.setMap(this.map_)
   }
   enterDone() {
-    // this.anchor.classList.remove('enter')
+    this.anchor.classList.remove('enter')
   }
   close() {
     const { anchor } = this
-    anchor.classList.remove('enter')
-    anchor.classList.add('leave')
-    const end = () => {
-      anchor.removeEventListener('animationend', onEnd) //eslint-disable-line
-      this.closeDone()
-    }
-    const onEnd = e => {
-      if (e.target === anchor) {
-        end()
-      }
-    }
     if (this.animated) {
-      this.anchor.addEventListener('animationend', onEnd)
+      anchor.classList.add('leave')
+      nextFrame(() => {
+        whenTransitionEnds(anchor, false, () => this.closeDone())
+      })
     } else {
       this.closeDone()
     }
