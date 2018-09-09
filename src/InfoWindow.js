@@ -35,7 +35,14 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
   defaultBindings(opts) {
     const closeCtas = this.anchor.querySelectorAll('.close-cta')
     if (closeCtas.length > 0) {
-      console.log(closeCtas)
+      [].forEach.call(closeCtas, closeCta => {
+        this._listeners.push(google.maps.event.addDomListener(closeCta, 'click', (e) => { //eslint-disable-line
+          if (e.stopPropagation) {
+            e.stopPropagation()
+          }
+          this.close()
+        }))
+      })
     }
 
     this._listeners.push(google.maps.event.addListener(this.marker, 'click', () => { //eslint-disable-line
