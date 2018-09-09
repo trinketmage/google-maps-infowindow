@@ -130,7 +130,7 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
       e.listener = null
     })
     this._listeners = this._listeners.filter((e) => {
-      return e.listener != null
+      return e != null
     })
   }
   stopEventPropagation() {
