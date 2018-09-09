@@ -4,7 +4,7 @@ import {
 } from './transition'
 
 const getGoogleClass = () => {
-  return google.maps.OverlayView//eslint-disable-line
+  return google.maps.OverlayView //eslint-disable-line
 }
 const createAnchor = () => {
   const anchor = document.createElement('div')
