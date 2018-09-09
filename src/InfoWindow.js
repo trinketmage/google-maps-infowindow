@@ -29,6 +29,14 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
     this.anchor.firstChild.appendChild(opts.content)
     this._listeners = []
     this.animated = opts.animated
+    this.defaultBindings(opts)
+    this.stopEventPropagation()
+  }
+  defaultBindings(opts) {
+    const closeCtas = this.anchor.querySelectorAll('.close-cta')
+    if (closeCtas.length > 0) {
+      console.log(closeCtas)
+    }
 
     this._listeners.push(google.maps.event.addListener(this.marker, 'click', () => { //eslint-disable-line
       !this.map ? this.open() : this.close()
@@ -36,7 +44,6 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
     this._listeners.push(google.maps.event.addListener(this.map_, 'click', () => { //eslint-disable-line
       !this.map || this.close()
     }))
-    this.stopEventPropagation()
   }
   panMap() {
     var map = this.map_
@@ -145,9 +152,9 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
       'touchstart',
       'pointerdown'
     ].forEach(event => {
-      anchor.addEventListener(event, function(e) {
+      this._listeners.push(anchor.addEventListener(event, function(e) {
         e.stopPropagation()
-      })
+      }))
     })
   }
 }
