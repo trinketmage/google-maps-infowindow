@@ -33,11 +33,11 @@ var marker = new google.maps.Marker({
   position: center,
   map: map
 })
+var element = document.body.querySelector('#popup')
 ```
 
 ### API
 ```js
-const element = document.body.querySelector('#popup')
 new GoogleMapsInfowindow({
   marker: marker,
   content: element
