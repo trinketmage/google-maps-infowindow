@@ -25,7 +25,7 @@ Transition behavior is highly inspired by @vuejs/transition.
 var map
 var center = {lat: 48.864716, lng: 2.349014}
 map = new google.maps.Map(document.getElementById('map'), {
-  center: {lat: 48.864716, lng: 2.349014},
+  center: center,
   zoom: 13,
   styles: mapStyle
 });
