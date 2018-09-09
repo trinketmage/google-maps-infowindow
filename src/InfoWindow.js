@@ -1,5 +1,19 @@
+const raf = window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : setTimeout
+export function nextFrame (fn) {
+  raf(() => {
+    raf(fn)
+  })
+}
 const getGoogleClass = () => {
   return google.maps.OverlayView//eslint-disable-line
+}
+const createAnchor = () => {
+  const anchor = document.createElement('div')
+  anchor.classList.add('infowindow-tip-anchor')
+  const contentBox = document.createElement('div')
+  contentBox.classList.add('infowindow-gabarit')
+  anchor.appendChild(contentBox)
+  return anchor
 }
 export default class GoogleMapsInfoWindow extends getGoogleClass() {
   constructor(opts) {
@@ -11,16 +25,14 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
     this.marker = opts.marker
     this.map_ = opts.marker.getMap()
     this.position = opts.marker.position
-    // opts.content.classList.add('infowindow-bubble-content')
-    // pixelOffset.appendChild(opts.content)
-    this.anchor = document.createElement('div')
     this.openened = false
-    this.anchor.classList.add('infowindow-tip-anchor')
-    // this.anchor.appendChild(pixelOffset)
+    this.anchor = createAnchor()
+    this.anchor.firstChild.appendChild(opts.content)
     this.stopEventPropagation()
     google.maps.event.addListener(this.marker, 'click', () => { //eslint-disable-line
       !this.map ? this.open() : this.close()
     })
+    this.animated = opts.animated
   }
   panMap() {
     var map = this.map_
@@ -53,9 +65,38 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
     }
   }
   open() {
+    if (this.animated) {
+      this.anchor.classList.add('enter')
+      this.anchor.addEventListener('animationend', this.enterDone.bind(this), {
+        once: true
+      })
+    }
     this.setMap(this.map_)
   }
+  enterDone() {
+    // this.anchor.classList.remove('enter')
+  }
   close() {
+    const { anchor } = this
+    anchor.classList.remove('enter')
+    anchor.classList.add('leave')
+    const end = () => {
+      anchor.removeEventListener('animationend', onEnd) //eslint-disable-line
+      this.closeDone()
+    }
+    const onEnd = e => {
+      if (e.target === anchor) {
+        end()
+      }
+    }
+    if (this.animated) {
+      this.anchor.addEventListener('animationend', onEnd)
+    } else {
+      this.closeDone()
+    }
+  }
+  closeDone(e) {
+    this.anchor.classList.remove('leave')
     this.setMap(null)
   }
   onAdd() {
@@ -78,9 +119,6 @@ export default class GoogleMapsInfoWindow extends getGoogleClass() {
     if (display === 'block') {
       this.anchor.style.left = divPosition.x + 'px'
       this.anchor.style.top = divPosition.y + 'px'
-      this.anchor.style.width = '100px'
-      this.anchor.style.height = '100px'
-      this.anchor.style.backgroundColor = 'blue'
     }
     if (this.anchor.style.display !== display) {
       this.anchor.style.display = display
